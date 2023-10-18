@@ -9,16 +9,24 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var items: [String] = ["🪨", "📄", "✂️"]
-        .shuffled()
+    @State private var items: [String] = ["🪨", "📄", "✂️"].shuffled()
     
-    @State private var choices: [String] = ["Win", "Lose", "Draw"]
+    @State private var choices: [String] = ["Win", "Lose", "Tie"].shuffled()
     
     @State private var randomSelection: Int = Int.random(in: 0...2)
     
+    @State private var result: Bool = false
+    @State private var endGame: Bool = false
+    
+    @State private var roundsPlayed: Int = 0
+    @State private var roundsWon: Int = 0
+    
+    @State private var alertMessage: String = ""
+    
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.yellow, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [.white, .blue, .indigo, .black],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
             
             VStack {
@@ -35,39 +43,60 @@ struct ContentView: View {
                 
                 VStack {
                     Text("The computer selected the following:")
-                        .font(.system(size: 22))
+                        .font(.system(size: 21).bold())
                     Text("\(items[randomSelection])")
-                        .font(.system(size: 100))
+                        .font(.system(size: 75))
+                        .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+                        .border(Color.white)
                 }
                 
                 Spacer()
                 
                 VStack {
-                    Text("Select the option that makes you:")
-                        .font(.system(size: 25))
+                    Text("Your objective is to:")
+                        .font(.system(size: 25).bold())
                     Text("\(choices[randomSelection])")
-                        .font(.largeTitle)
+                        .font(.largeTitle.bold())
+                        .font(.system(size: 75))
+                        .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+                        .border(Color.white)
+                        .foregroundColor(.white)
                 }
                 
                 Spacer()
                 
                 VStack (spacing: 30) {
-                    Text("Click a Button!")
-                        .font(.largeTitle)
+                    Text("Make Your Selection!")
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(.white)
                     HStack(spacing: 20) {
-                        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                        Button {
+                            print("Click")
+                            selection("🪨")
+                        } label: {
                             Text("🪨")
                                 .font(.system(size: 100))
-                        })
-                        Button(action: {}, label: {
+                        }
+                        
+                        Button {
+                            print("Click")
+                            selection("📄")
+                        } label: {
                             Text("📄")
                                 .font(.system(size: 100))
-                        })
-                        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                        }
+                        
+                        Button {
+                            print("Click")
+                            selection("✂️")
+                        } label: {
                             Text("✂️")
                                 .font(.system(size: 100))
-                        })
+                        }
                     }
+                    Text("Score: \(roundsWon) / \(roundsPlayed)")
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(.white)
                     
                 }
                 Spacer()
@@ -76,7 +105,79 @@ struct ContentView: View {
             
             
         }
+        .alert("Result", isPresented: $result) {
+            Button("Continue", action: newRound)
+        } message: {
+            Text(alertMessage)
+        }
+        .alert("End of Game", isPresented: $endGame) {
+            Button("Restart") {
+                roundsPlayed = 0
+                roundsWon = 0
+                newRound()
+            }
+        } message: {
+            Text(alertMessage)
+        }
         
+    }
+    
+    func selection(_ playerChoice: String) {
+        let objective = choices[randomSelection]
+        let computerChoice = items[randomSelection]
+        print("The computer chose: \(computerChoice)")
+        print("Your objective was: \(objective)")
+        
+        roundsPlayed += 1
+        
+        if objective == "Win" {
+            // win
+            
+            if computerChoice == "🪨" && playerChoice == "📄" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else if computerChoice == "📄" && playerChoice == "✂️" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else if computerChoice == "✂️" && playerChoice == "🪨" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else {
+                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+            }
+        } else if objective == "Lose" {
+            if computerChoice == "📄" && playerChoice == "🪨" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else if computerChoice == "✂️" && playerChoice == "📄" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else if computerChoice == "🪨" && playerChoice == "✂️" {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else {
+                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+            }
+        } else {
+            if playerChoice == computerChoice {
+                roundsWon += 1
+                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+            } else {
+                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+            }
+        }
+        
+        if roundsPlayed < 10 {
+            result = true
+        } else {
+            endGame = true
+        }
+    }
+    
+    func newRound() {
+        items.shuffle()
+        choices.shuffle()
+        randomSelection = Int.random(in: 0...2)
     }
 }
 
