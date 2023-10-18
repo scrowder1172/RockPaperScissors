@@ -94,9 +94,11 @@ struct ContentView: View {
                                 .font(.system(size: 100))
                         }
                     }
-                    Text("Score: \(roundsWon) / \(roundsPlayed)")
+                    
+                    Text("Score: \(roundsWon)")
                         .font(.largeTitle.bold())
                         .foregroundStyle(.white)
+                        //.padding()
                     
                 }
                 Spacer()
@@ -134,36 +136,29 @@ struct ContentView: View {
             // win
             
             if computerChoice == "🪨" && playerChoice == "📄" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else if computerChoice == "📄" && playerChoice == "✂️" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else if computerChoice == "✂️" && playerChoice == "🪨" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else {
-                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = loseRound()
             }
         } else if objective == "Lose" {
             if computerChoice == "📄" && playerChoice == "🪨" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else if computerChoice == "✂️" && playerChoice == "📄" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else if computerChoice == "🪨" && playerChoice == "✂️" {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else {
-                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = loseRound()
             }
         } else {
             if playerChoice == computerChoice {
-                roundsWon += 1
-                alertMessage = "You won! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = winRound()
             } else {
-                alertMessage = "You lost! \(roundsWon) / \(roundsPlayed)"
+                alertMessage = loseRound()
             }
         }
         
@@ -178,6 +173,15 @@ struct ContentView: View {
         items.shuffle()
         choices.shuffle()
         randomSelection = Int.random(in: 0...2)
+    }
+    
+    func winRound() -> String {
+        roundsWon += 1
+        return "You won! \(roundsWon) / \(roundsPlayed)"
+    }
+    
+    func loseRound() -> String {
+        return "You lost! \(roundsWon) / \(roundsPlayed)"
     }
 }
 
