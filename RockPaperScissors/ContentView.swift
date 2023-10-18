@@ -22,11 +22,31 @@ struct ContentView: View {
                 .ignoresSafeArea()
             
             VStack {
+                VStack {
+                    Text("Rock, Paper Scissors +")
+                        .font(.system(size: 22))
+                    Text("Win, Lose, or Draw")
+                        .font(.system(size: 22))
+                    Rectangle()
+                        .frame(height: 1)
+                }
+                
                 Spacer()
                 
                 VStack {
-                    Text("The computer selected the following: \(items[randomSelection])")
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    Text("The computer selected the following:")
+                        .font(.system(size: 22))
+                    Text("\(items[randomSelection])")
+                        .font(.system(size: 100))
+                }
+                
+                Spacer()
+                
+                VStack {
+                    Text("Select the option that makes you:")
+                        .font(.system(size: 25))
+                    Text("\(choices[randomSelection])")
+                        .font(.largeTitle)
                 }
                 
                 Spacer()
